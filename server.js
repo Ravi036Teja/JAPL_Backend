@@ -70,21 +70,29 @@
 //   require('dotenv').config({ path: './.env' }); // This will load your current .env file
 // }
 
-require('dotenv').config(); 
+// server.js (or app.js)
+
+require('dotenv').config(); // This will load your single .env file regardless of NODE_ENV
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path'); 
-// const bodyParser = require('body-parser'); // <<< REMOVE THIS LINE - not needed with express.json()
+const path = require('path');
 
 // --- DATABASE CONNECTION ---
 // Define MONGODB_URI and CORS_ORIGIN *after* dotenv config
-const MONGODB_URI = process.env.MONGODB_URI; // Now this will have a value
+const MONGODB_URI = process.env.MONGODB_URI; // Now this will have a value from your single .env
 const CORS_ORIGIN = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : []; // Now this will have a value
 
+// Ensure MONGODB_URI is defined
+if (!MONGODB_URI) {
+  console.error('FATAL ERROR: MONGODB_URI is not defined in the .env file.');
+  process.exit(1); // Exit the process if a critical variable is missing
+}
+
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 const app = express();
 
@@ -96,9 +104,9 @@ app.use(express.json());
 
 // CORS Middleware
 app.use(cors({
-  origin: CORS_ORIGIN, // Use the dynamically loaded origins array
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
+  origin: CORS_ORIGIN, // Use the dynamically loaded origins array
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
 }));
 
 // --- ROUTES ---
@@ -113,16 +121,16 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/blogs', blogRoutes);
-app.use('/api/jobs', jobRoutes); 
+app.use('/api/jobs', jobRoutes);
 
 // Basic test route
 app.get('/', (req, res) => {
-  res.send('Backend API is running!');
+  res.send('Backend API is running!');
 });
 
 // --- SERVER START ---
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`NODE_ENV: ${process.env.NODE_ENV || 'development (default)'}`);
-  console.log(`CORS Origins: ${CORS_ORIGIN.join(', ')}`); // This will now show the correct origins
+  console.log(`Server is running on port ${PORT}`);
+  // Removed NODE_ENV console log as it's less relevant with a single .env
+  console.log(`CORS Origins: ${CORS_ORIGIN.join(', ')}`); // This will now show the correct origins
 });
