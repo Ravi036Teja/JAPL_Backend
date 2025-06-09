@@ -23,7 +23,7 @@ const blogController = require('../controllers/blogController');
 
 // Admin routes
 router.post('/', blogController.createBlog);
-router.put('/:id', blogController.updateBlog); // <--- CHANGE BACK TO .put
+router.patch('/:id', blogController.updateBlog); // <--- CHANGE BACK TO .put
 router.delete('/:id', blogController.deleteBlog);
 
 module.exports = router;
