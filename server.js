@@ -64,13 +64,13 @@
 // --- CONDITIONAL DOTENV CONFIGURATION ---
 // IMPORTANT: Place this at the very top of your file to ensure env vars are loaded before anything else
 // Correct placement: This block should be the FIRST thing after basic imports
-if (process.env.NODE_ENV === 'production') {
-  require('dotenv').config({ path: './.env.production' });
-} else {
-  require('dotenv').config({ path: './.env' }); // This will load your current .env file
-}
+// if (process.env.NODE_ENV === 'production') {
+//   require('dotenv').config({ path: './.env.production' });
+// } else {
+//   require('dotenv').config({ path: './.env' }); // This will load your current .env file
+// }
 
-
+require('dotenv').config(); 
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
