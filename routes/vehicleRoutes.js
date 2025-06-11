@@ -153,9 +153,38 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     const vehicle = await Vehicle.findByIdAndDelete(req.params.id);
     if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
     res.json({ message: 'Vehicle deleted successfully' });
+    console.log('vehicle deleted successfuly..');
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
+     console.log(err);
   }
+});
+
+router.delete('/bulk', authMiddleware, async (req, res) => {
+    try {
+        const { ids } = req.body; // Expect an array of IDs in the request body
+
+        // Basic validation: Ensure 'ids' is an array and not empty
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ message: 'Please provide an array of vehicle IDs for bulk deletion.' });
+        }
+
+        // Use Mongoose's deleteMany to remove multiple documents
+        const result = await Vehicle.deleteMany({ _id: { $in: ids } });
+
+        // Check if any documents were actually deleted
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'No vehicles found with the provided IDs to delete.' });
+        }
+
+        res.status(200).json({
+            message: `${result.deletedCount} vehicle(s) deleted successfully.`,
+            deletedCount: result.deletedCount
+        });
+    } catch (err) {
+        console.error('Error during bulk vehicle deletion:', err);
+        res.status(500).json({ message: 'Server error during bulk deletion', error: err.message });
+    }
 });
 
 module.exports = router;
