@@ -29,10 +29,11 @@ app.use(express.json());
 // CORS Middleware - Directly define multiple origins here
 app.use(cors({
     origin: [
-        'http://localhost:3000', // Your local development frontend
-        'http://localhost:3001', // Your local development admin panel
+        // 'http://localhost:3000', // Your local development frontend
+        // 'http://localhost:3001', // Your local development admin panel
         // 'https://janathaautomobiles.netlify.app', // Your deployed frontend
         'https://japl-adminpanel.onrender.com', // Your deployed admin panel
+        'https://japl-admin-panel.netlify.app',
         'https://japl.co.in' // Another deployed frontend
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
